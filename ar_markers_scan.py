@@ -1,13 +1,9 @@
-#!/usr/bin/env python
-
 from __future__ import print_function
 import sys, getopt
 import time
 import numpy as np
 import imutils
-from imutils.video import VideoStream
 import keyboard
-import pyautogui
 
 try:
 	import cv2
@@ -20,7 +16,7 @@ prevTime = time.time()
 def on_key_event(event):
     print(f"Key {event.name} was {event.event_type}")
 
-def putFps(img):
+def putFps(img): # fps 표시 
 	global prevTime
 	curTime = time.time()
 	sec = curTime - prevTime
@@ -75,9 +71,8 @@ def main(argv):
 
 if __name__ == '__main__':
 	print('Press "q" to quit')
-    
 	capture = cv2.VideoCapture(0)
-
+ 
 	if capture.isOpened():  # try to get the first frame
 		frame_captured, frame = capture.read()
 
@@ -87,30 +82,46 @@ if __name__ == '__main__':
 		markers = detect_markers(frame)
 		centerX = 0
 		centerY = 0
+  
 		for marker in markers:
+			
 			marker.highlite_marker(frame)
 			centerX = marker.center[0];
 			centerY = marker.center[1];
-   
-			# if keyboard.is_pressed('a'):
-			# 	print("keyboard")
-   
-			if centerX < 368 and centerY < 219:
-				pyautogui.keyUp("a") # 누르고 있는다 
+			
+			if centerX < 368 and centerY < 219: # left
+				keyboard.press('w+a')
 				print("Left")
-				key = True
-			elif centerX > 480 and centerY < 220:
-				keyboard.press("D")
+			else:
+				keyboard.release('w+a')
+				keyboard.press('w') # 앞으로 계속 가고 있는 키 
+			
+			if centerX > 480 and centerY < 220: # right
+				keyboard.press('d')
 				print("Right")
-				key = True
-			elif centerX > 360 and centerX < 494 and centerY > 380 and centerY < 460:
-				keyboard.press("space")
+			else:
+				keyboard.release('d')
+				keyboard.press('w') # 앞으로 계속 가고 있는 키 
+    
+			if centerX > 360 and centerX < 494 and centerY > 380 and centerY < 460: # drift
+				keyboard.press('space')
 				print("Drift")
-				key = True
+			else:
+				keyboard.release('space')
+				keyboard.press('w') # 앞으로 계속 가고 있는 키 
+    
+			if centerX > 650 and centerY > 390: # back
+				keyboard.release('w')
+				keyboard.press('s')
+				print("Back")
+			else:
+				keyboard.release('s')
+				keyboard.press('w') # 앞으로 계속 가고 있는 키 
    
 			# print(centerX, centerY);
 			# print("detect!")
 		cv2.imshow('Test Frame', frame)
+  
 		if cv2.waitKey(1) & 0xFF == ord('q'):
 			break
 		frame_captured, frame = capture.read()
@@ -121,14 +132,17 @@ if __name__ == '__main__':
 		height = frame.shape[0]
 		width = frame.shape[1]
     
-		frame = cv2.rectangle(frame,(0,0),(width//2- 35,height//2 ),(0,255,0),1)
-		cv2.putText(frame,'LEFT',(110,30),cv2.FONT_HERSHEY_DUPLEX,1,(139,0,0))
+		frame = cv2.rectangle(frame,(0,0),(width//2- 35,height//2 ),(255,255,255),3)
+		cv2.putText(frame,'LEFT',(160,30),cv2.FONT_HERSHEY_DUPLEX,1,(255,255,255), 2)
     
-		frame = cv2.rectangle(frame,(width//2 + 35,0),(width-2,height//2 ),(0,255,0),1)
-		cv2.putText(frame,'RIGHT',(width - width//4,30),cv2.FONT_HERSHEY_DUPLEX,1,(139,0,0))
+		frame = cv2.rectangle(frame,(width//2 + 35,0),(width-2,height//2 ),(255,255,255),3)
+		cv2.putText(frame,'RIGHT',(width - width//4- 20,30),cv2.FONT_HERSHEY_DUPLEX,1,(255,255,255), 2)
 
-		frame = cv2.rectangle(frame,(2*(width//5),3*(height//4)),(3*width//5,height),(0,255,0),1)
-		cv2.putText(frame,'DRIFT',(2*(width//5) + 20,height-10),cv2.FONT_HERSHEY_DUPLEX,1,(139,0,0))
+		frame = cv2.rectangle(frame,(2*(width//5),3*(height//4)),(3*width//5,height),(255,255,255),3)
+		cv2.putText(frame,'DRIFT',(2*(width//5) + 45,height-10),cv2.FONT_HERSHEY_DUPLEX,1,(255,255,255),2)
+  
+		frame = cv2.rectangle(frame,(width//2+ 200, 3*(height//4)),(width,height),(255,255,255),3)
+		cv2.putText(frame,'BACK',(width - width//6 - 10,height-10),cv2.FONT_HERSHEY_DUPLEX,1,(255,255,255),2)
         
 	# When everything done, release the capture
 	capture.release()
