@@ -23,7 +23,7 @@ $ python3 ar_markers_scan.py -c 1 -f
 ```
 
 ## 👀 Usage
-<img width="60%" alt="image" src="https://user-images.githubusercontent.com/70511859/230760005-9a600fed-53c5-4f6e-bab6-43984298ea16.png">
+<img width="60%" alt="image" src="https://user-images.githubusercontent.com/70511859/230760005-9a600fed-53c5-4f6e-bab6-43984298ea16.png"><br>  
 1. 게임과 파이썬 코드를 실행시킨다.
 2. aruco marker 이미지를 카메라에 인식시켜 게임을 할 수 있다.
 3. left, right, drift, back 기능을 사용할 수 있으며, back을 제외한 키들은 앞으로 가는 키와 동시에 눌린다. 
