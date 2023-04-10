@@ -90,10 +90,10 @@ if __name__ == '__main__':
 			centerY = marker.center[1];
 			
 			if centerX < 368 and centerY < 219: # left
-				keyboard.press('w+a')
+				keyboard.press('a')
 				print("Left")
 			else:
-				keyboard.release('w+a')
+				keyboard.release('a')
 				keyboard.press('w') # 앞으로 계속 가고 있는 키 
 			
 			if centerX > 480 and centerY < 220: # right
