@@ -101,20 +101,20 @@ if __name__ == '__main__':
 			else:
 				keyboard.release('d')
     
-			if centerX > 400 and centerX < 591 and centerY > 380: # Back
+			if centerX > 389 and centerX < 600 and centerY > 374: # Back
 				keyboard.release('w')
 				keyboard.press('s')
 				print("Back")
 			else:
 				keyboard.release('s')
     
-			if centerX > 650 and centerY > 380: # Front
+			if centerX > 642 and centerY > 374: # Front
 				keyboard.press('w')
 				print("Front")
 			else:
 				keyboard.release('w')
    
-			# print(centerX, centerY);
+			print(centerX, centerY);
 			# print("detect!")
 		cv2.imshow('Test Frame', frame)
   
