@@ -25,57 +25,30 @@ def putFps(img): # fps 표시
 	fps_txt = "%01.f" % fps_val
 	cv2.putText(img, fps_txt, (0, 25), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 255, 0))
 
-def main(argv):
-    cam_id = 0 #default 0
-    fps_view = False
-    
-    try:
-        opts, args = getopt.getopt(argv,"hc:f",["camera_id="])
-    except getopt.GetoptError:
-        print('default setting : cam id = 0, fps indication = disabled')
-        
-    for opt, arg in opts:
-        if opt == '-h':
-            print('test.py -c <camera_id> -f')
-            sys.exit()
-        elif opt in ("-c", "--camera"):
-            cam_id = int(arg)
-        elif opt in ("-f", "--fps"):
-            fps_view = True
-            
-    print('Press "q" to quit')
-    capture = cv2.VideoCapture(cam_id)
-    
-    if capture.isOpened():  # try to get the first frame
-        frame_captured, frame = capture.read()
-    else:
-        print('Failed to Open Camera %d' % cam_id)
-        frame_captured = False
-    while frame_captured:
-        frame_captured, frame = capture.read()
-        
-        markers = detect_markers(frame)
-        
-        for marker in markers:
-            marker.highlite_marker(frame)
-        if fps_view:
-            putFps(frame)
-            
-        cv2.imshow('Test Frame', frame)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-
-	# When everything done, release the capture
-    capture.release()
-    cv2.destroyAllWindows()
-
 if __name__ == '__main__':
+	cam_id = 0 #default 0
+	argv = sys.argv
+	# print(argv)
+	
+	# try:
+	# 	opts, args = getopt.getopt(argv,"hc:f",["camera_id="])
+	# except:
+	# 	print('default setting : cam id = 0, fps indication = disabled')
+    
+	# for opt, arg in opts:
+	# 	if opt == '-h':
+	# 		print('test.py -c <camera_id> -f')
+	# 		sys.exit()
+	# 	elif opt in ("-c", "--camera"):
+	# 		cam_id = int(arg)
+            
 	print('Press "q" to quit')
-	capture = cv2.VideoCapture(0)
+	print('cam_id : ', argv[2])
+	cam_id = int(argv[2])
+	capture = cv2.VideoCapture(cam_id)
  
 	if capture.isOpened():  # try to get the first frame
 		frame_captured, frame = capture.read()
-
 	else:
 		frame_captured = False
 	while frame_captured:
@@ -114,7 +87,7 @@ if __name__ == '__main__':
 			else:
 				keyboard.release('w')
    
-			print(centerX, centerY);
+			# print(centerX, centerY);
 			# print("detect!")
 		cv2.imshow('Test Frame', frame)
   

@@ -114,7 +114,7 @@ if __name__ == '__main__':
 			else:
 				keyboard.release('w')
    
-			print(centerX, centerY);
+			# print(centerX, centerY);
 			# print("detect!")
 		cv2.imshow('Test Frame', frame)
   
