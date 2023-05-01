@@ -14,11 +14,12 @@ $ git clone https://github.com/YeJi222/HCI_entertainment.git
 - 다운 받은 프로젝트에 marker_3624.png 이미지를 그대로 사용하셔도 되고, 새로운 aruco marker를 다운받아도 됩니다.
 (aruco marker 생성 방법)   
 ```
-$ python ar_markers_generate.py
+$ python3 ar_markers_generate.py
 ```
 
-- 실행
+- 실행    
 ```
+$ python3 ar_markers_scan.py -c [camera id] -f
 $ python3 ar_markers_scan.py -c 1 -f
 ```
 
