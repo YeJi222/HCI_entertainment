@@ -29,18 +29,6 @@ if __name__ == '__main__':
 	cam_id = 0 #default 0
 	argv = sys.argv
 	# print(argv)
-	
-	# try:
-	# 	opts, args = getopt.getopt(argv,"hc:f",["camera_id="])
-	# except:
-	# 	print('default setting : cam id = 0, fps indication = disabled')
-    
-	# for opt, arg in opts:
-	# 	if opt == '-h':
-	# 		print('test.py -c <camera_id> -f')
-	# 		sys.exit()
-	# 	elif opt in ("-c", "--camera"):
-	# 		cam_id = int(arg)
             
 	print('Press "q" to quit')
 	print('cam_id : ', argv[2])
@@ -62,33 +50,19 @@ if __name__ == '__main__':
 			centerX = marker.center[0];
 			centerY = marker.center[1];
 			
-			if centerX < 355 and centerY < 220: # left
+			if centerX < 356 and centerY < 460: # left
 				keyboard.press('a')
 				print("Left")
 			else:
 				keyboard.release('a')
 			
-			if centerX > 497 and centerY < 220: # right
+			if centerX > 496 and centerY < 460: # right
 				keyboard.press('d')
 				print("Right")
 			else:
 				keyboard.release('d')
-    
-			if centerX > 389 and centerX < 600 and centerY > 374: # Back
-				keyboard.release('w')
-				keyboard.press('s')
-				print("Back")
-			else:
-				keyboard.release('s')
-    
-			if centerX > 642 and centerY > 374: # Front
-				keyboard.press('w')
-				print("Front")
-			else:
-				keyboard.release('w')
    
 			# print(centerX, centerY);
-			# print("detect!")
 		cv2.imshow('Test Frame', frame)
   
 		if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -101,17 +75,11 @@ if __name__ == '__main__':
 		height = frame.shape[0]
 		width = frame.shape[1]
     
-		frame = cv2.rectangle(frame,(0,0),(width//2- 50,height//2 ),(255,255,255),3)
+		frame = cv2.rectangle(frame,(0,0),(width//2- 50, height),(255,255,255),3)
 		cv2.putText(frame,'LEFT',(160,30),cv2.FONT_HERSHEY_DUPLEX,1,(255,255,255), 2)
     
-		frame = cv2.rectangle(frame,(width//2 + 50,0),(width-2,height//2 ),(255,255,255),3)
+		frame = cv2.rectangle(frame,(width//2 + 50,0),(width-2, height),(255,255,255),3)
 		cv2.putText(frame,'RIGHT',(width - width//4- 20,30),cv2.FONT_HERSHEY_DUPLEX,1,(255,255,255), 2)
-
-		frame = cv2.rectangle(frame,(2*(width//5) + 35,3*(height//4)),(3*width//4 - 25,height),(255,255,255),3)
-		cv2.putText(frame,'BACK',(2*(width//5) + 120,height-10),cv2.FONT_HERSHEY_DUPLEX,1,(255,255,255),2)
-  
-		frame = cv2.rectangle(frame,(width//2+ 200, 3*(height//4)),(width,height),(255,255,255),3)
-		cv2.putText(frame,'FRONT',(width - width//6 - 15,height-10),cv2.FONT_HERSHEY_DUPLEX,1,(255,255,255),2)
         
 	# When everything done, release the capture
 	capture.release()
