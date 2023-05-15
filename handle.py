@@ -19,7 +19,7 @@ def on_key_event(event):
 def putFps(img): # fps 표시 
 	global prevTime
 	curTime = time.time()
-	sec = curTime - prevTimea
+	sec = curTime - prevTime
 	prevTime = curTime
 	fps_val = 1/(sec)
 	fps_txt = "%01.f" % fps_val

@@ -1,83 +1,73 @@
-from __future__ import print_function
-import sys, getopt
-import time
-import numpy as np
-import imutils
-import keyboard
+import tkinter as tk
+import cv2 as cv
 import threading
-import pygame
+from PIL import Image
+from PIL import ImageTk
 
-try:
-	import cv2
-	from ar_markers import detect_markers
-except ImportError:
-	raise Exception('Error: OpenCv is not installed')
 
-prevTime = time.time()
-
-def on_key_event(event):
-    print(f"Key {event.unicode} was {event.type}")
-    if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_a:
-            keyboard.press('a')
-        elif event.key == pygame.K_d:
-            keyboard.press('d')
-        elif event.key == pygame.K_w:
-            keyboard.press('w')
-        elif event.key == pygame.K_s:
-            keyboard.press('s')
-    elif event.type == pygame.KEYUP:
-        if event.key == pygame.K_a:
-            keyboard.release('a')
-        elif event.key == pygame.K_d:
-            keyboard.release('d')
-        elif event.key == pygame.K_w:
-            keyboard.release('w')
-        elif event.key == pygame.K_s:
-            keyboard.release('s')
-
-def putFps(img): # fps 표시 
-	global prevTime
-	curTime = time.time()
-	sec = curTime - prevTime
-	prevTime = curTime
-	fps_val = 1/(sec)
-	fps_txt = "%01.f" % fps_val
-	cv2.putText(img, fps_txt, (0, 25), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 255, 0))
- 
-
-def process_frames(capture, frame):
+def capture(camera_num, label):
+    cap = cv.VideoCapture(camera_num)
     while True:
-        frame_captured, frame[:] = capture.read()
-        if not frame_captured:
+        ret, frame = cap.read()
+        if ret:
+            # OpenCV에서 가져온 이미지를 Tkinter Label에 표시하기 위해 적절한 형식으로 변환
+            cv_image = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
+            pil_image = Image.fromarray(cv_image)
+            tk_image = ImageTk.PhotoImage(image=pil_image)
+
+            # Tkinter Label 업데이트
+            label.config(image=tk_image)
+            label.image = tk_image
+
+        if cv.waitKeyEx(1) == ord('q'):
             break
-        markers = detect_markers(frame)
-        centerX = 0
-        centerY = 0
-        for marker in markers:
-            marker.highlite_marker(frame)
-            centerX = marker.center[0];
-            centerY = marker.center[1];
-            if centerX < 355 and centerY < 220: # left
-                print("Left")
-            else:
-                print("Release Left")
-            if centerX > 497 and centerY < 220: # right
-                print("Right")
-            else:
-                print("Release Right")
-            if centerX > 389 and centerX < 600 and centerY > 374: # Back
-                print("Back")
-            else:
-                print("Release Back")
-            if centerX > 642 and centerY > 374: # Front
-                print("Front")
-            else:
-                print("Release Front")
-        putFps(frame)
-        frame = np.flip(frame, axis=1)
-        frame = imutils.resize(frame, width=650)
-        frame = imutils.resize(frame, height=480)
-        height = frame.shape[0]
-        width = frame.shape[1]
-        frame = cv2.rectangle(frame,(0,0),(width//2- 
+
+def capture2(camera_num, label):
+    cap = cv.VideoCapture(camera_num)
+    while True:
+        ret, frame = cap.read()
+        if ret:
+            # OpenCV에서 가져온 이미지를 Tkinter Label에 표시하기 위해 적절한 형식으로 변환
+            cv_image = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
+            pil_image = Image.fromarray(cv_image)
+            tk_image = ImageTk.PhotoImage(image=pil_image)
+
+            # Tkinter Label 업데이트
+            label.config(image=tk_image)
+            label.image = tk_image
+
+        if cv.waitKeyEx(1) == ord('q'):
+            break
+
+def start_cameras():
+    # GUI 생성
+    root = tk.Tk()
+    root.title("Cameras")
+    root.geometry("800x600")
+
+    # 왼쪽 카메라를 위한 Label
+    label1 = tk.Label(root)
+    label1.pack(side=tk.LEFT, padx=10, pady=10)
+
+    # 오른쪽 카메라를 위한 Label
+    label2 = tk.Label(root)
+    label2.pack(side=tk.RIGHT, padx=10, pady=10)
+
+    # 각 카메라에 대한 스레드 생성
+    thread1 = threading.Thread(target=capture, args=(0, label1))
+    thread2 = threading.Thread(target=capture2, args=(1, label2))
+
+    # 스레드 시작
+    thread1.start()
+    thread2.start()
+
+    # GUI 메인 루프 실행
+    root.mainloop()
+
+    # 스레드 종료 대기
+    # thread1.join()
+    # thread2.join()
+
+
+if __name__ == '__main__':
+    start_cameras()
