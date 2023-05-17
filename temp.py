@@ -1,73 +1,94 @@
-import tkinter as tk
-import cv2 as cv
-import threading
-from PIL import Image
-from PIL import ImageTk
+from __future__ import print_function
+import sys, getopt
+import time
+import numpy as np
+import imutils
+import keyboard
 
+try:
+	import cv2
+	from ar_markers import detect_markers
+except ImportError:
+	raise Exception('Error: OpenCv is not installed')
 
-def capture(camera_num, label):
-    cap = cv.VideoCapture(camera_num)
-    while True:
-        ret, frame = cap.read()
-        if ret:
-            # OpenCV에서 가져온 이미지를 Tkinter Label에 표시하기 위해 적절한 형식으로 변환
-            cv_image = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
-            pil_image = Image.fromarray(cv_image)
-            tk_image = ImageTk.PhotoImage(image=pil_image)
+prevTime = time.time()
 
-            # Tkinter Label 업데이트
-            label.config(image=tk_image)
-            label.image = tk_image
+def on_key_event(event):
+    print(f"Key {event.name} was {event.event_type}")
 
-        if cv.waitKeyEx(1) == ord('q'):
-            break
-
-def capture2(camera_num, label):
-    cap = cv.VideoCapture(camera_num)
-    while True:
-        ret, frame = cap.read()
-        if ret:
-            # OpenCV에서 가져온 이미지를 Tkinter Label에 표시하기 위해 적절한 형식으로 변환
-            cv_image = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
-            pil_image = Image.fromarray(cv_image)
-            tk_image = ImageTk.PhotoImage(image=pil_image)
-
-            # Tkinter Label 업데이트
-            label.config(image=tk_image)
-            label.image = tk_image
-
-        if cv.waitKeyEx(1) == ord('q'):
-            break
-
-def start_cameras():
-    # GUI 생성
-    root = tk.Tk()
-    root.title("Cameras")
-    root.geometry("800x600")
-
-    # 왼쪽 카메라를 위한 Label
-    label1 = tk.Label(root)
-    label1.pack(side=tk.LEFT, padx=10, pady=10)
-
-    # 오른쪽 카메라를 위한 Label
-    label2 = tk.Label(root)
-    label2.pack(side=tk.RIGHT, padx=10, pady=10)
-
-    # 각 카메라에 대한 스레드 생성
-    thread1 = threading.Thread(target=capture, args=(0, label1))
-    thread2 = threading.Thread(target=capture2, args=(1, label2))
-
-    # 스레드 시작
-    thread1.start()
-    thread2.start()
-
-    # GUI 메인 루프 실행
-    root.mainloop()
-
-    # 스레드 종료 대기
-    # thread1.join()
-    # thread2.join()
-
+def putFps(img): # fps 표시 
+	global prevTime
+	curTime = time.time()
+	sec = curTime - prevTime
+	prevTime = curTime
+	fps_val = 1/(sec)
+	fps_txt = "%01.f" % fps_val
+	cv2.putText(img, fps_txt, (0, 25), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 255, 0))
 
 if __name__ == '__main__':
-    start_cameras()
+	cam_id = 0 #default 0
+	argv = sys.argv
+	# print(argv)
+            
+	print('Press "q" to quit')
+	print('cam_id : ', argv[2])
+	cam_id = int(argv[2])
+	cam_id2 = cam_id + 1
+	# cam_id3 = cam_id + 2
+ 
+	capture = cv2.VideoCapture(cam_id)
+	# capture2 = cv2.VideoCapture(cam_id2)
+	# capture3 = cv2.VideoCapture(cam_id3)
+    
+ 
+	if capture.isOpened():  # try to get the first frame
+		frame_captured, frame = capture.read()
+	else:
+		frame_captured = False
+	while frame_captured:
+		markers = detect_markers(frame)
+		centerX = 0
+		centerY = 0
+  
+		for marker in markers:
+			
+			marker.highlite_marker(frame)
+			centerX = marker.center[0];
+			centerY = marker.center[1];
+			
+			if centerX < 356 and centerY < 460: # left
+				keyboard.press('a')
+				print("Left")
+			else:
+				keyboard.release('a')
+			
+			if centerX > 496 and centerY < 460: # right
+				keyboard.press('d')
+				print("Right")
+			else:
+				keyboard.release('d')
+   
+			# print(centerX, centerY);
+        
+        
+		if cv2.waitKey(1) & 0xFF == ord('q'):
+			break
+		cv2.imshow('Handle', frame)
+
+		frame_captured, frame = capture.read()
+		frame = np.flip(frame, axis=1)
+		frame = imutils.resize(frame, width=650)
+		frame = imutils.resize(frame, height=480)
+    
+		height = frame.shape[0]
+		width = frame.shape[1]
+    
+		frame = cv2.rectangle(frame,(0,0),(width//2- 50, height),(255,255,255),3)
+		cv2.putText(frame,'LEFT',(160,30),cv2.FONT_HERSHEY_DUPLEX,1,(255,255,255), 2)
+    
+		frame = cv2.rectangle(frame,(width//2 + 50,0),(width-2, height),(255,255,255),3)
+		cv2.putText(frame,'RIGHT',(width - width//4- 20,30),cv2.FONT_HERSHEY_DUPLEX,1,(255,255,255), 2)
+        
+	# When everything done, release the capture
+	capture.release()
+	cv2.destroyAllWindows()
