@@ -42,7 +42,6 @@ def camera_first(cam_id, capture, q):
         centerY = 0
         
         # print(centerX, centerY)
-        
         for marker in markers:
             marker.highlite_marker(frame)
             centerX = marker.center[0]
@@ -53,9 +52,11 @@ def camera_first(cam_id, capture, q):
             if 650 < centerX < 1245 and 30 < centerY < 780: # accel
                 # keyboard.press('a')
                 # print(centerX, centerY)
-                print("Excel")
+                eccelFlag = 1
+                print("Eccel")
             else:
-                print()
+                eccelFlag = 0
+                # print()
                 # keyboard.release('a')
 
 			# print(centerX, centerY);
@@ -98,19 +99,17 @@ def camera_second(cam_id, capture, q2):
             centerX = marker.center[0]
             centerY = marker.center[1]
             
-            print("camera2 coordinate", centerX, centerY)
+            # print("camera2 coordinate", centerX, centerY)
+            print("eccel", eccelFlag)
             
-            if centerX < 356 and centerY < 460: # left
-                keyboard.press('a')
-                print("Left")
-            else:
-                keyboard.release('a')
-                
-            if centerX > 496 and centerY < 460: # right
-                keyboard.press('d')
-                print("Right")
-            else:
-                keyboard.release('d')
+            if centerX < 400 and eccelFlag == 1:
+                print("Front")
+                front = 1
+                back = 0
+            if centerX > 450 and eccelFlag == 1:
+                print("Back")
+                front = 0
+                back = 0
 
 			# print(centerX, centerY);
 			# print("detect!")
@@ -123,13 +122,13 @@ def camera_second(cam_id, capture, q2):
 	
         height = frame.shape[0]
         width = frame.shape[1]
+        
+        frame = cv2.rectangle(frame,(0,0),(width//2- 10,height),(255,255,255),3)
+        cv2.putText(frame,'FRONT',(160,30),cv2.FONT_HERSHEY_DUPLEX,1,(255,255,255), 2)
+        
+        frame = cv2.rectangle(frame,(width//2 + 10,0),(width-2,height),(255,255,255),3)
+        cv2.putText(frame,'BACK',(width - width//4- 20,30),cv2.FONT_HERSHEY_DUPLEX,1,(255,255,255), 2)
 		
-        frame = cv2.rectangle(frame,(0,0),(width//2- 50, height),(255,255,255),3)
-        cv2.putText(frame,'LEFT',(160,30),cv2.FONT_HERSHEY_DUPLEX,1,(255,255,255), 2)
-		
-        frame = cv2.rectangle(frame,(width//2 + 50,0),(width-2, height),(255,255,255),3)
-        cv2.putText(frame,'RIGHT',(width - width//4- 20,30),cv2.FONT_HERSHEY_DUPLEX,1,(255,255,255), 2)
- 
         q2.put(frame)
         
     # print("Second Camera")
@@ -149,6 +148,10 @@ if __name__ == '__main__':
 	# capture3 = cv2.VideoCapture(cam_id3)
  
 	frame_captured, frame = capture.read();
+ 
+	eccelFlag = 0
+	front = 0
+	back = 0
 	
 	q = queue.Queue()
 	q2 = queue.Queue()
@@ -161,7 +164,6 @@ if __name__ == '__main__':
 		thread_1.start()
 		thread_2.start()
 		# thread_3.start()
-	
 		
   
 		frame = q.get()
@@ -180,12 +182,6 @@ if __name__ == '__main__':
 		thread_1.join()
 		thread_2.join()
 		# thread_3.join()
-     
-     
-		# frame_captured, frame = capture.read();
-		#frame_captured2, frame2 = capture2.read()
-  
-      
 		
 	# When everything done, release the capture
 	capture.release()
