@@ -1,5 +1,5 @@
 from __future__ import print_function
-import sys, getopt
+import sys
 import time
 import numpy as np
 import imutils
@@ -75,7 +75,9 @@ def camera_first(cam_id, capture, q, accelQ, accelFlag):
     
 def camera_second(cam_id, capture, q2, accelFlag):
     # print("camera 2")
-    # print("cam_id : " + str(cam_id))
+    # print("camera2 cam_id : " + str(cam_id))
+    
+    # capture = cv2.VideoCapture(cam_id)
     frame_captured, frame = capture.read();
     
     # print(frame_captured)
@@ -137,6 +139,8 @@ if __name__ == '__main__':
 	capture2 = cv2.VideoCapture(cam_id2)
  
 	frame_captured, frame = capture.read();
+	frame_captured2, frame2 = capture2.read();
+ 
  
 	accelFlag = 0
 	
@@ -145,12 +149,12 @@ if __name__ == '__main__':
 	accelQ = queue.Queue()
 	accelQ.put(0)
     
-	while frame_captured:
+	while 1:
 		accelFlag = accelQ.get()
 		# print("accel", accelFlag)
         
 		thread_1 = threading.Thread(target = camera_first, args=(cam_id, capture, q, accelQ, accelFlag))
-		thread_2 = threading.Thread(target = camera_second, args=(cam_id, capture, q2, accelFlag))
+		thread_2 = threading.Thread(target = camera_second, args=(cam_id2, capture2, q2, accelFlag))
 	
 		thread_1.start()
 		thread_2.start()
