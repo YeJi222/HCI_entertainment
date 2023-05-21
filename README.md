@@ -46,6 +46,8 @@ $ python3 handle.py
 <img width="400" alt="image" src="https://github.com/YeJi222/HCI_entertainment/assets/70511859/1c46196a-0c72-41be-a646-131722b34ff6">
 
 3. handle.py 실행(핸들 인식)      
+<img width="450" alt="image" src="https://github.com/YeJi222/HCI_entertainment/assets/70511859/480500cf-1da4-4aae-9b4e-94323bc4820f">
+
 4. aruco marker를 카메라 3대에 인식시켜 게임을 할 수 있습니다.      
 4-1. aruco marker 이미지를 정면 카메라(핸들 - left/right)에 인식시켜 핸들 방향 조절       
 4-2. aruco marker 이미지를 발 밑 카메라(엑셀)에 인식시켜 엑셀 밟기       
