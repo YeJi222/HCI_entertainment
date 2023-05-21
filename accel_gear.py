@@ -1,3 +1,10 @@
+'''
+    Accel & Gear Code using MultiThread
+    
+    Accel Camera - #0
+    Gear Camera - #1
+'''
+
 from __future__ import print_function
 import sys
 import time
@@ -18,20 +25,7 @@ prevTime = time.time()
 def on_key_event(event):
     print(f"Key {event.name} was {event.event_type}")
 
-def putFps(img): # fps 표시 
-	global prevTime
-	curTime = time.time()
-	sec = curTime - prevTime
-	prevTime = curTime
-	fps_val = 1/(sec)
-	fps_txt = "%01.f" % fps_val
-	cv2.putText(img, fps_txt, (0, 25), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 255, 0))
-
-def camera_first(cam_id, capture, q, accelQ, accelFlag):
-    # print("camera 1")
-    # print("cam_id : " + str(cam_id))
-    
-    # capture = cv2.VideoCapture(cam_id)
+def camera_first(capture, q, accelQ, accelFlag):
     frame_captured, frame = capture.read();
     
     if frame_captured:
@@ -39,20 +33,16 @@ def camera_first(cam_id, capture, q, accelQ, accelFlag):
         centerX = 0
         centerY = 0
         
-        # print(centerX, centerY)
         for marker in markers:
             marker.highlite_marker(frame)
             centerX = marker.center[0]
             centerY = marker.center[1]
-            
             # print("camera1 coordinate", centerX, centerY)
             
-            if 650 < centerX < 1245 and 30 < centerY < 780: # accel
+            if 650 < centerX < 1220 and 60 < centerY < 745: # accel
                 accelFlag = 1
-                # print("accel in camera_first", accelFlag)
             else:
                 accelFlag = 0
-                # print("accel in camera_first", accelFlag)
 		
         # print("accel Flag in camera_first", accelFlag)
         accelQ.put(accelFlag)
@@ -70,47 +60,33 @@ def camera_first(cam_id, capture, q, accelQ, accelFlag):
 
         q.put(frame)
     
-    return frame;
-    
-    
-def camera_second(cam_id, capture, q2, accelFlag):
-    # print("camera 2")
-    # print("camera2 cam_id : " + str(cam_id))
-    
-    # capture = cv2.VideoCapture(cam_id)
-    frame_captured, frame = capture.read();
-    
-    # print(frame_captured)
+def camera_second(capture2, q2, accelFlag):
+    frame_captured, frame = capture2.read();
     
     if frame_captured:
         markers = detect_markers(frame)
         centerX = 0
         # centerY = 0
         
-        # print(centerX, centerY)
-        
         for marker in markers:
             marker.highlite_marker(frame)
             centerX = marker.center[0]
             # centerY = marker.center[1]
-            # print("camera2 coordinate", centerX, centerY)
+            # print("camera2 coordinate", centerX)
             
             if centerX > 1025 and accelFlag == 1: # front
                 keyboard.press('w')
                 print("Front")
             else:
                 keyboard.release('w')
-            if centerX < 888 and accelFlag == 1: # back
+            if centerX < 890 and accelFlag == 1: # back
                 keyboard.release('w')
                 keyboard.press('s')
                 print("Back")
             else:
                 keyboard.release('s')
-
-			# print(centerX, centerY);
-			# print("detect!")
 		
-        frame_captured, frame = capture.read()
+        frame_captured, frame = capture2.read()
         frame = np.flip(frame, axis=1)
         frame = imutils.resize(frame, width=650)
         frame = imutils.resize(frame, height=480)
@@ -127,23 +103,16 @@ def camera_second(cam_id, capture, q2, accelFlag):
         q2.put(frame)
 
 if __name__ == '__main__':
-	cam_id = 0 #default 0
+	cam_id = 0
 	argv = sys.argv
 
-	print('Press "q" to quit')
-	print('cam_id : ', argv[2])
-	cam_id = int(argv[2])
-	cam_id2 = cam_id + 1;
+	cam_id = int(argv[2]) # cam_id 0 => camera1 - Accel
+	cam_id2 = cam_id + 1; # cam_id 1 => camera2 - Gear
  
 	capture = cv2.VideoCapture(cam_id)
 	capture2 = cv2.VideoCapture(cam_id2)
  
-	frame_captured, frame = capture.read();
-	frame_captured2, frame2 = capture2.read();
- 
- 
 	accelFlag = 0
-	
 	q = queue.Queue()
 	q2 = queue.Queue()
 	accelQ = queue.Queue()
@@ -153,21 +122,19 @@ if __name__ == '__main__':
 		accelFlag = accelQ.get()
 		# print("accel", accelFlag)
         
-		thread_1 = threading.Thread(target = camera_first, args=(cam_id, capture, q, accelQ, accelFlag))
-		thread_2 = threading.Thread(target = camera_second, args=(cam_id2, capture2, q2, accelFlag))
+		thread_1 = threading.Thread(target = camera_first, args=(capture, q, accelQ, 0))
+		thread_2 = threading.Thread(target = camera_second, args=(capture2, q2, accelFlag))
 	
 		thread_1.start()
 		thread_2.start()
-  
-		# print("accel", accelFlag)
   
 		frame = q.get()
 		frame2 = q2.get()
 		if cv2.waitKey(1) & 0xFF == ord('q'):
 			break
 
-		cv2.imshow('Camera1', frame)
-		cv2.imshow('Camera2', frame2)
+		cv2.imshow('Camera1 - Accel', frame)
+		cv2.imshow('Camera2 - Gear', frame2)
   
 		thread_1.join()
 		thread_2.join()

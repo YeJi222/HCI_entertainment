@@ -1,5 +1,10 @@
+'''
+    Handle Code
+    
+    Handle Camera - #2
+'''
+
 from __future__ import print_function
-import sys, getopt
 import time
 import numpy as np
 import imutils
@@ -26,13 +31,9 @@ def putFps(img): # fps 표시
 	cv2.putText(img, fps_txt, (0, 25), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 255, 0))
 
 if __name__ == '__main__':
-	cam_id = 0 #default 0
-	argv = sys.argv
-	# print(argv)
-            
-	print('Press "q" to quit')
-	print('cam_id : ', argv[2])
-	cam_id = int(argv[2])
+	print('Handle Code')
+ 
+	cam_id = 2 # handle camera - #2
 	capture = cv2.VideoCapture(cam_id)
  
 	if capture.isOpened():  # try to get the first frame
@@ -45,7 +46,6 @@ if __name__ == '__main__':
 		centerY = 0
   
 		for marker in markers:
-			
 			marker.highlite_marker(frame)
 			centerX = marker.center[0];
 			centerY = marker.center[1];
@@ -63,7 +63,7 @@ if __name__ == '__main__':
 				keyboard.release('d')
    
 			# print(centerX, centerY);
-		cv2.imshow('Test Frame', frame)
+		cv2.imshow('Camera3 - Handle', frame)
   
 		if cv2.waitKey(1) & 0xFF == ord('q'):
 			break
