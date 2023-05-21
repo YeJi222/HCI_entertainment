@@ -37,10 +37,14 @@ $ python3 accel_gear.py
 $ python3 handle.py
 ```
 
-## **👀** Usage
-<img width="60%" alt="image" src="https://user-images.githubusercontent.com/70511859/230760005-9a600fed-53c5-4f6e-bab6-43984298ea16.png"><br>  
+## **👀** Usage  
 1. 게임 실행(Real Driver Legend of the City)   
+<img width="600" alt="image" src="https://github.com/YeJi222/HCI_entertainment/assets/70511859/e94f2849-7323-42c8-ae3d-e233a8845a3d">
+
 2. accel_gear.py 실행(엑셀, 기어 인식)    
+<img width="400" alt="image" src="https://github.com/YeJi222/HCI_entertainment/assets/70511859/3ebb6ad4-58ef-44e6-8675-8c9fcb9306d9">
+<img width="400" alt="image" src="https://github.com/YeJi222/HCI_entertainment/assets/70511859/1c46196a-0c72-41be-a646-131722b34ff6">
+
 3. handle.py 실행(핸들 인식)      
 4. aruco marker를 카메라 3대에 인식시켜 게임을 할 수 있습니다.      
 4-1. aruco marker 이미지를 정면 카메라(핸들 - left/right)에 인식시켜 핸들 방향 조절       
