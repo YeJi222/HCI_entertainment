@@ -6,7 +6,6 @@
 '''
 
 from __future__ import print_function
-import sys
 import time
 import numpy as np
 import imutils
@@ -103,11 +102,8 @@ def camera_second(capture2, q2, accelFlag):
         q2.put(frame)
 
 if __name__ == '__main__':
-	cam_id = 0
-	argv = sys.argv
-
-	cam_id = int(argv[2]) # cam_id 0 => camera1 - Accel
-	cam_id2 = cam_id + 1; # cam_id 1 => camera2 - Gear
+	cam_id = 0 # cam_id 0 => camera1 - Accel
+	cam_id2 = 1 # cam_id 1 => camera2 - Gear
  
 	capture = cv2.VideoCapture(cam_id)
 	capture2 = cv2.VideoCapture(cam_id2)
