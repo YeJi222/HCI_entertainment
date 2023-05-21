@@ -39,9 +39,15 @@ $ python3 handle.py
 
 ## **👀** Usage
 <img width="60%" alt="image" src="https://user-images.githubusercontent.com/70511859/230760005-9a600fed-53c5-4f6e-bab6-43984298ea16.png"><br>  
-1. 게임과 파이썬 코드를 실행시킨다.
-2. aruco marker 이미지를 카메라에 인식시켜 게임을 할 수 있다.
-3. left, right, drift, back 기능을 사용할 수 있으며, back을 제외한 키들은 앞으로 가는 키와 동시에 눌린다. 
+1. 게임 실행(Real Driver Legend of the City)   
+2. accel_gear.py 실행(엑셀, 기어 인식)    
+3. handle.py 실행(핸들 인식)      
+4. aruco marker를 카메라 3대에 인식시켜 게임을 할 수 있습니다.      
+4-1. aruco marker 이미지를 정면 카메라(핸들 - left/right)에 인식시켜 핸들 방향 조절       
+4-2. aruco marker 이미지를 발 밑 카메라(엑셀)에 인식시켜 엑셀 밟기       
+4-3. aruco marker 이미지를 사이드 카메라(기어 - front/back)에 인식시켜 기어 방향 조절       
+
+🚧 엑셀과 기어를 동시에 인식시켜야 작동됩니다. EX) 엑셀 + front : 앞으로, 엑셀 + back : 뒤로 🚧    
 
 ## Reference
 [오픈소스 링크]   
