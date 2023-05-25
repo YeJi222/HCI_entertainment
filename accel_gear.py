@@ -36,9 +36,9 @@ def camera_first(capture, q, accelQ, accelFlag):
             marker.highlite_marker(frame)
             centerX = marker.center[0]
             centerY = marker.center[1]
-            # print("camera1 coordinate", centerX, centerY)
+            # awssssprint("camera1 coordinate", centerX, centerY)
             
-            if 650 < centerX < 1220 and 60 < centerY < 745: # accel
+            if 650 < centerX < 1225 and 60 < centerY < 745: # accel
                 accelFlag = 1
             else:
                 accelFlag = 0
@@ -66,6 +66,7 @@ def camera_second(capture2, q2, accelFlag):
         markers = detect_markers(frame)
         centerX = 0
         # centerY = 0
+        # print("accel", accelFlag)
         
         for marker in markers:
             marker.highlite_marker(frame)
@@ -73,12 +74,14 @@ def camera_second(capture2, q2, accelFlag):
             # centerY = marker.center[1]
             # print("camera2 coordinate", centerX)
             
-            if centerX > 1025 and accelFlag == 1: # front
+            
+            if centerX > 1060 and accelFlag == 1: # front
+                keyboard.release('s')
                 keyboard.press('w')
                 print("Front")
             else:
                 keyboard.release('w')
-            if centerX < 890 and accelFlag == 1: # back
+            if centerX < 855 and accelFlag == 1: # back
                 keyboard.release('w')
                 keyboard.press('s')
                 print("Back")
@@ -116,7 +119,7 @@ if __name__ == '__main__':
     
 	while 1:
 		accelFlag = accelQ.get()
-		# print("accel", accelFlag)
+		print("accel", accelFlag)
         
 		thread_1 = threading.Thread(target = camera_first, args=(capture, q, accelQ, 0))
 		thread_2 = threading.Thread(target = camera_second, args=(capture2, q2, accelFlag))

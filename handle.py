@@ -50,16 +50,20 @@ if __name__ == '__main__':
 			centerX = marker.center[0];
 			centerY = marker.center[1];
 			
-			if centerX < 356 and centerY < 460: # left
+			if centerX < 338 and centerY < 460: # left
 				keyboard.press('a')
+				keyboard.press('w')
 				print("Left")
 			else:
+				# keyboard.press('w')
 				keyboard.release('a')
 			
-			if centerX > 496 and centerY < 460: # right
+			if centerX > 514 and centerY < 460: # right
 				keyboard.press('d')
+				keyboard.press('w')
 				print("Right")
 			else:
+				# keyboard.press('w')
 				keyboard.release('d')
    
 			# print(centerX, centerY);
@@ -75,10 +79,10 @@ if __name__ == '__main__':
 		height = frame.shape[0]
 		width = frame.shape[1]
     
-		frame = cv2.rectangle(frame,(0,0),(width//2- 50, height),(255,255,255),3)
+		frame = cv2.rectangle(frame,(0,0),(width//2 - 70, height),(255,255,255),3)
 		cv2.putText(frame,'LEFT',(160,30),cv2.FONT_HERSHEY_DUPLEX,1,(255,255,255), 2)
     
-		frame = cv2.rectangle(frame,(width//2 + 50,0),(width-2, height),(255,255,255),3)
+		frame = cv2.rectangle(frame,(width//2 + 70,0),(width-2, height),(255,255,255),3)
 		cv2.putText(frame,'RIGHT',(width - width//4- 20,30),cv2.FONT_HERSHEY_DUPLEX,1,(255,255,255), 2)
         
 	# When everything done, release the capture
